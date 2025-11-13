@@ -66,7 +66,17 @@ img {
 a {
   color: var(--color-primary);
   text-decoration: none;
+  position: relative;
 }
+a .underline {
+  position: absolute;
+  left: 0; right: 0; bottom: -2px; height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .25s ease;
+}
+a:hover .underline { transform: scaleX(1); }
 
 a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
   outline: none;
@@ -165,10 +175,15 @@ footer.sticky-gradient {
 /* Reveal animations */
 .reveal {
   opacity: 0;
-  transform: translateY(16px);
   transition: opacity .6s ease, transform .6s ease;
+  will-change: opacity, transform;
 }
+.reveal.fade-up { transform: translateY(16px); }
+.reveal.fade-left { transform: translateX(16px); }
+.reveal.fade-right { transform: translateX(-16px); }
+.reveal.scale-in { transform: scale(.96); }
+
 .reveal.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate(0,0) scale(1);
 }

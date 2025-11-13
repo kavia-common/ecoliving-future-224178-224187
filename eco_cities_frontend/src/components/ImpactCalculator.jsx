@@ -82,7 +82,7 @@ export default function ImpactCalculator() {
   const dietPct = total ? Math.min(100, (results.diet / total) * 100) : 0;
 
   return (
-    <div className="calc-form card" role="form" aria-labelledby="calc-title">
+    <div className="calc-form card reveal fade-up" role="form" aria-labelledby="calc-title">
       <h3 id="calc-title">Impact Calculator</h3>
       <p className="small muted">Adjust your lifestyle inputs to see estimated weekly CO2 emissions.</p>
 

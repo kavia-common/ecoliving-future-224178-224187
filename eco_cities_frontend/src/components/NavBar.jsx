@@ -12,9 +12,8 @@ export default function NavBar({ onToggleTheme, currentTheme }) {
   const [active, setActive] = React.useState('home');
 
   React.useEffect(() => {
-    const sections = ['home', 'concepts', 'gallery', 'lifestyle', 'cta']
-      .map(id => document.getElementById(id))
-      .filter(Boolean);
+    const sectionIds = ['home', 'concepts', 'innovations', 'gallery', 'lifestyle', 'cta'];
+    const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
 
     const onScroll = () => {
       const offset = window.scrollY + 120; // consider navbar height
@@ -60,6 +59,7 @@ export default function NavBar({ onToggleTheme, currentTheme }) {
             {[
               { id: 'home', label: 'Home' },
               { id: 'concepts', label: 'Concepts' },
+              { id: 'innovations', label: 'Innovations' },
               { id: 'gallery', label: 'Gallery' },
               { id: 'lifestyle', label: 'Lifestyle' },
               { id: 'cta', label: 'Get Started' }

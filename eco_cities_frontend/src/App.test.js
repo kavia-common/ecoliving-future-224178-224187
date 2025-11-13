@@ -9,6 +9,7 @@ test('renders SPA sections and footer', () => {
   render(<App />);
   expect(getById('home')).toBeInTheDocument();
   expect(getById('concepts')).toBeInTheDocument();
+  expect(getById('innovations')).toBeInTheDocument();
   expect(getById('gallery')).toBeInTheDocument();
   expect(getById('lifestyle')).toBeInTheDocument();
   expect(getById('cta')).toBeInTheDocument();

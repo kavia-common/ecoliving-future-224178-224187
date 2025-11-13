@@ -14,6 +14,7 @@
   --radius-sm: 10px;
   --shadow: 0 16px 40px rgba(2,6,23,0.1);
   --shadow-sm: 0 10px 22px rgba(2,6,23,0.08);
+  --underline: linear-gradient(currentColor, currentColor);
 }
 
 [data-theme="dark"] {
@@ -57,10 +58,30 @@
   opacity: .9;
   padding: .5rem .75rem;
   border-radius: 8px;
+  position: relative;
+  transition: color .2s ease;
 }
+/* Link underline animation */
+.navbar a::after {
+  content: "";
+  position: absolute;
+  left: .75rem;
+  right: .75rem;
+  bottom: .35rem;
+  height: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .25s ease;
+}
+.navbar a:hover::after { transform: scaleX(1); }
 .navbar a.active {
   color: var(--primary);
   background: rgba(37,99,235,.08);
+}
+.navbar a.active::after {
+  transform: scaleX(1);
+  background: var(--primary);
 }
 
 .hero {
@@ -93,6 +114,12 @@
   justify-content: center;
 }
 
+/* floating subtle keyframes for parallax foregrounds */
+@keyframes floatY {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
 .section {
   padding: 3.5rem 1rem;
 }
@@ -100,13 +127,37 @@
   max-width: 1100px;
   margin: 0 auto;
 }
+/* Card micro-interaction: lift on hover + smooth shadow */
 .card {
   background: var(--surface);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
   border: 1px solid rgba(0,0,0,0.06);
   padding: 1.25rem;
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
 }
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+  border-color: rgba(37,99,235,.18);
+}
+
+/* Button ripple (CSS-only pseudo ripple) */
+.btn {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120px 120px at var(--mx,50%) var(--my,50%), rgba(255,255,255,.35), transparent 60%);
+  opacity: 0;
+  transition: opacity .25s ease;
+  pointer-events: none;
+}
+.btn:hover::after { opacity: .6; }
 
 .gallery {
   overflow-x: auto;
@@ -126,7 +177,9 @@
   box-shadow: var(--shadow);
   overflow: hidden;
   border: 1px solid rgba(0,0,0,0.06);
+  transition: transform .25s ease, box-shadow .25s ease;
 }
+.gallery .item:hover { transform: translateY(-4px); box-shadow: 0 18px 44px rgba(2,6,23,0.14); }
 .gallery .caption {
   padding: .75rem 1rem;
   color: var(--muted);
@@ -166,10 +219,12 @@ kbd.k {
   border: 1px solid rgba(0,0,0,.12);
   background: var(--surface);
   color: var(--text);
+  transition: border-color .2s ease, background .2s ease;
 }
 .input input:focus, .input select:focus {
   box-shadow: var(--ring);
   outline: none;
+  border-color: rgba(37,99,235,.35);
 }
 .error {
   color: var(--error);
@@ -211,4 +266,51 @@ kbd.k {
 :focus-visible {
   outline: none;
   box-shadow: var(--ring);
+}
+
+/* Innovations grid and lifestyle quick tips */
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+@media (min-width: 768px) {
+  .grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.icon-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(37,99,235,.08);
+  color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Counter styling */
+.counter {
+  font-weight: 800;
+  font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+}
+.counter .unit {
+  font-weight: 600;
+  color: var(--muted);
+  font-size: .9em;
+}
+
+/* Reduced motion safety for float animation */
+@media (prefers-reduced-motion: reduce) {
+  .float-slow { animation: none !important; }
+}
+
+/* Utility for foreground leaves layer */
+.leaves {
+  /* background-image supplied inline for build-safe PUBLIC_URL path */
+  background-repeat: repeat;
+  background-size: 300px 300px;
+  mix-blend-mode: multiply;
+  opacity: .22;
+  filter: blur(0.2px);
+  animation: floatY 9s ease-in-out infinite;
 }

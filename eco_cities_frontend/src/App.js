@@ -44,18 +44,46 @@ function AppShell() {
       <NavBar onToggleTheme={toggleTheme} currentTheme={theme} />
       <main id="home" role="main" tabIndex={-1} aria-label="Eco Cities content">
         <Hero />
-        <Section id="concepts" title="Eco-Architecture Concepts" variant="surface">
-          <div className="card reveal">
-            <p className="muted">
-              Explore green roofs, passive solar designs, urban forests, and water-sensitive planning
-              that make cities resilient and sustainable.
-            </p>
+
+        <Section id="concepts" title="Eco-Architecture Concepts" variant="surface" revealVariant="fade-up">
+          <div className="grid cols-2">
+            <div className="card reveal fade-left">
+              <h3>Bioclimatic design</h3>
+              <p className="muted">Green roofs, passive ventilation, and daylighting reduce energy demand while improving comfort.</p>
+            </div>
+            <div className="card reveal fade-right">
+              <h3>Blue–green corridors</h3>
+              <p className="muted">Urban forests and water-sensitive design bolster biodiversity and manage stormwater naturally.</p>
+            </div>
           </div>
         </Section>
-        <Section id="gallery" title="Inspiration Gallery" variant="default">
+
+        <Section id="innovations" title="Innovations" variant="default" revealVariant="fade-up">
+          <div className="grid cols-3">
+            {[
+              { icon: '🔋', title: 'Microgrids', desc: 'Neighborhood-scale resilient energy with storage.' },
+              { icon: '🚰', title: 'Greywater', desc: 'Reuse systems that cut potable demand.' },
+              { icon: '🏗️', title: 'Modular', desc: 'Prefabricated timber reduces embodied carbon.' },
+              { icon: '🚌', title: 'Mobility Hubs', desc: 'Seamless transit, bike, and e‑sharing nodes.' },
+              { icon: '🌬️', title: 'Smart Air', desc: 'Sensors optimize ventilation and comfort.' },
+              { icon: '♻️', title: 'Circular Loops', desc: 'Waste-to-resource ecosystems at district scale.' },
+            ].map((c, i) => (
+              <div className="card reveal scale-in" key={c.title} role="article" aria-label={c.title}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
+                  <div className="icon-badge" aria-hidden="true">{c.icon}</div>
+                  <h3 style={{ margin: 0 }}>{c.title}</h3>
+                </div>
+                <p className="small muted" style={{ marginTop: '.5rem' }}>{c.desc}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        <Section id="gallery" title="Inspiration Gallery" variant="default" revealVariant="fade-left">
           <Gallery />
         </Section>
-        <Section id="lifestyle" title="Personal Impact" variant="surface">
+
+        <Section id="lifestyle" title="Personal Impact" variant="surface" revealVariant="fade-right">
           {isFeatureEnabled('calculator') ? (
             <ImpactCalculator />
           ) : (
@@ -63,8 +91,26 @@ function AppShell() {
               <p className="muted">Impact calculator is disabled by feature flag.</p>
             </div>
           )}
+
+          {/* Quick tips cards */}
+          <div className="grid cols-3" style={{ marginTop: '1rem' }} aria-label="Lifestyle quick tips">
+            {[
+              { icon: '🚲', title: 'Active commute', tip: 'Swap short car trips with cycling or walking 2x/week.' },
+              { icon: '🥗', title: 'Plant-forward', tip: 'Try 3 meat-free dinners weekly to cut food emissions.' },
+              { icon: '💡', title: 'Efficient habits', tip: 'LED bulbs and smart plugs trim baseline energy.' },
+            ].map(t => (
+              <div className="card reveal fade-up" key={t.title}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
+                  <div className="icon-badge" aria-hidden="true">{t.icon}</div>
+                  <h3 style={{ margin: 0 }}>{t.title}</h3>
+                </div>
+                <p className="small muted" style={{ marginTop: '.5rem' }}>{t.tip}</p>
+              </div>
+            ))}
+          </div>
         </Section>
-        <Section id="cta" title="Join the movement" variant="default">
+
+        <Section id="cta" title="Join the movement" variant="default" revealVariant="scale-in">
           <div className="card reveal" style={{ textAlign: 'center' }}>
             <p className="muted">Small steps lead to big change. Start today.</p>
             <div style={{ marginTop: '.5rem' }}>

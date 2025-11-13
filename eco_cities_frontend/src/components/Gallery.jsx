@@ -15,10 +15,11 @@ export default function Gallery() {
     el.scrollBy({ left: amount, behavior: 'smooth' });
   };
 
+  const base = process.env.PUBLIC_URL || '';
   const items = [
-    { src: '/assets/leaf-texture.svg', alt: 'Leaf texture background', caption: 'Biophilic patterns' },
-    { src: '/assets/eco-city.svg', alt: 'Eco city skyline silhouette', caption: 'Green roofs & skylines' },
-    { src: '/assets/leaf-texture.svg', alt: 'Organic leaf pattern', caption: 'Organic facades' },
+    { src: `${base}/assets/leaf-texture.svg`, alt: 'Leaf texture background', caption: 'Biophilic patterns' },
+    { src: `${base}/assets/eco-city.svg`, alt: 'Eco city skyline silhouette', caption: 'Green roofs & skylines' },
+    { src: `${base}/assets/leaf-texture.svg`, alt: 'Organic leaf pattern', caption: 'Organic facades' },
   ];
 
   return (
@@ -26,8 +27,12 @@ export default function Gallery() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '.5rem' }}>
         <span className="small muted">Hint: Use mouse wheel shift-scroll or buttons</span>
         <div aria-label="Scroll controls">
-          <button className="btn secondary" onClick={() => scrollBy(-1)} aria-label="Scroll left"><span aria-hidden="true">←</span> <span className="small">Prev</span></button>
-          <button className="btn" onClick={() => scrollBy(1)} aria-label="Scroll right" style={{ marginLeft: '.5rem' }}><span className="small">Next</span> <span aria-hidden="true">→</span></button>
+          <button className="btn secondary" onClick={() => scrollBy(-1)} aria-label="Scroll left">
+            <span aria-hidden="true">←</span> <span className="small">Prev</span>
+          </button>
+          <button className="btn" onClick={() => scrollBy(1)} aria-label="Scroll right" style={{ marginLeft: '.5rem' }}>
+            <span className="small">Next</span> <span aria-hidden="true">→</span>
+          </button>
         </div>
       </div>
       <div
