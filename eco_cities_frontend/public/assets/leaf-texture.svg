@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="600" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Leaf texture">
+  <defs>
+    <pattern id="p" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M0 30 C 10 10, 50 10, 60 30 C 50 50, 10 50, 0 30 Z" fill="#22c55e" fill-opacity=".08"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="600" fill="#ffffff"/>
+  <rect width="1200" height="600" fill="url(#p)"/>
+</svg>
