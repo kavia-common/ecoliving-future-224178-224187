@@ -1,82 +1,145 @@
-# Lightweight React Template for KAVIA
+# Eco Cities Frontend (SPA)
 
-This project provides a minimal React template with a clean, modern UI and minimal dependencies.
+This frontend is a single‑page React application showcasing sustainable living and future eco‑cities. It delivers smooth scrolling, section reveals, parallax effects, an inspiration gallery, and an interactive personal impact calculator. The UI follows the Ocean Professional theme with accessible color contrast, keyboard support, and reduced‑motion considerations.
 
-## Features
+## Architecture and SPA Structure
 
-- **Lightweight**: No heavy UI frameworks - uses only vanilla CSS and React
-- **Modern UI**: Clean, responsive design with KAVIA brand styling
-- **Fast**: Minimal dependencies for quick loading times
-- **Simple**: Easy to understand and modify
+The app is a single page with fixed top navigation and section anchors. Navigation highlights the section in view and uses smooth scroll with focus management for accessibility.
 
-## Getting Started
+- Entry: `src/index.js` renders `<App />` via React 18 root API.
+- App shell: `src/App.js`
+  - Layout composition and in‑page anchor handling (smooth scroll + focus via `ensureFocusAfterJump`).
+  - Sections: `#home` (Hero), `#concepts`, `#gallery`, `#lifestyle`, `#cta`.
+  - Sticky gradient footer.
+  - Theme management provided via `ThemeProvider` with a toggle button in the navbar.
+- Components:
+  - `components/NavBar.jsx` — fixed top nav, active link highlighting, theme toggle, ARIA attributes.
+  - `components/Hero.jsx` — hero with layered parallax background and CTAs.
+  - `components/Section.jsx` — generic section wrapper with reveal‑on‑scroll.
+  - `components/Gallery.jsx` — horizontally scrolling, snap‑based gallery with keyboard hints.
+  - `components/ImpactCalculator.jsx` — interactive calculator with validation and live results.
+  - `components/ParallaxLayer.jsx` — parallax layer respecting prefers‑reduced‑motion.
+  - `components/FeatureFlags.js` — helpers to check feature flags and experiments.
+  - `components/ThemeProvider.jsx` — light/dark theme context and localStorage persistence.
+- Hooks:
+  - `hooks/useParallax.js` — computes y offset from scroll with throttling and reduced‑motion guard.
+  - `hooks/useIntersectionReveal.js` — IntersectionObserver‑based reveal with fallback.
+- Utilities:
+  - `utils/a11y.js` — focus management and polite live region announcements.
+  - `utils/env.js` — safe accessors for environment variables and feature flags.
+- Styles:
+  - `src/index.css` — global reset, variables, base components, and utilities.
+  - `src/App.css` — component styles, cards, gallery, calculator, and parallax helpers.
 
-In the project directory, you can run:
+## Environment Configuration
 
-### `npm start`
+React (CRA) exposes environment vars prefixed with REACT_APP_. This project reads its configuration via `src/utils/env.js`.
 
-Runs the app in development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Supported variables:
+- REACT_APP_API_BASE — base path for API requests (string, optional).
+- REACT_APP_BACKEND_URL — absolute backend origin (string, optional).
+- REACT_APP_FRONTEND_URL — absolute frontend origin (string, optional).
+- REACT_APP_WS_URL — WebSocket URL (string, optional).
+- REACT_APP_NODE_ENV — application environment name (default: development).
+- REACT_APP_NEXT_TELEMETRY_DISABLED — disable Next.js telemetry (not used by CRA; kept for parity).
+- REACT_APP_ENABLE_SOURCE_MAPS — enable/disable source maps (CRA uses GENERATE_SOURCEMAP; see note below).
+- REACT_APP_PORT — port number used by the container (default: 3000).
+- REACT_APP_TRUST_PROXY — reverse proxy trust flag (not used by CRA runtime; optional).
+- REACT_APP_LOG_LEVEL — one of silent|error|warn|info|debug|trace (default: info).
+- REACT_APP_HEALTHCHECK_PATH — health endpoint path (default: /health).
+- REACT_APP_FEATURE_FLAGS — JSON object or CSV list. Example: `{"calculator":true}` or `calculator,advancedParallax`.
+- REACT_APP_EXPERIMENTS_ENABLED — toggle experiments (true|false, default: false).
 
-### `npm test`
+How they are used:
+- `utils/env.js` exposes getters like `getApiBase`, `getLogLevel`, `getFeatureFlags`, and more.
+- `components/FeatureFlags.js` calls `getFeatureFlags()` and `getExperimentsEnabled()` to gate features such as the Impact Calculator (flag: `calculator`).
 
-Launches the test runner in interactive watch mode.
+Notes on CRA specifics:
+- CRA only injects variables starting with `REACT_APP_` at build time.
+- Disabling source maps follows CRA’s `GENERATE_SOURCEMAP=false` convention during build. The provided `REACT_APP_ENABLE_SOURCE_MAPS` can be mirrored by setting `GENERATE_SOURCEMAP` accordingly in your build environment.
 
-### `npm run build`
+See `.env.example` for a full template.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Feature Flags
 
-## Customization
+Feature flags are parsed from `REACT_APP_FEATURE_FLAGS`:
+- JSON form: `{"calculator": true}`.
+- CSV form: `calculator,advancedParallax`.
 
-### Colors
-
-The main brand colors are defined as CSS variables in `src/App.css`:
-
-```css
-:root {
-  --kavia-orange: #E87A41;
-  --kavia-dark: #1A1A1A;
-  --text-color: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --border-color: rgba(255, 255, 255, 0.1);
+Checking a flag:
+```js
+import { isFeatureEnabled } from './components/FeatureFlags';
+if (isFeatureEnabled('calculator')) {
+  // render calculator
 }
 ```
 
-### Components
+Global experiments switch:
+```js
+import { experimentsEnabled } from './components/FeatureFlags';
+if (experimentsEnabled()) {
+  // enable experimental UI paths
+}
+```
 
-This template uses pure HTML/CSS components instead of a UI framework. You can find component styles in `src/App.css`. 
+## Accessibility
 
-Common components include:
-- Buttons (`.btn`, `.btn-large`)
-- Container (`.container`)
-- Navigation (`.navbar`)
-- Typography (`.title`, `.subtitle`, `.description`)
+The application emphasizes accessible interactions and content:
+- Skip link to jump to `#home` with proper focusing.
+- Smooth scrolling enhanced with `ensureFocusAfterJump`, ensuring screen readers and keyboard users land correctly.
+- Live region announcements via `announce()` for non-visual feedback (e.g., theme change).
+- Reduced motion: all parallax and animations honor `prefers-reduced-motion` and disable or minimize movement.
+- ARIA: semantic regions, labeled navigation, and `aria-live` updates in dynamic areas such as calculator results.
 
-## Learn More
+## Responsiveness and Performance
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The layout adapts from mobile to desktop with fluid typography and spacing:
+- The gallery uses horizontal scroll with scroll‑snap and accessible keyboard interaction hints.
+- Cards and sections scale via CSS clamps and responsive grids.
+- Throttled scroll handlers via `requestAnimationFrame` minimize jank.
+- Images are lazy‑loaded where applicable.
 
-### Code Splitting
+## Local Development
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- Install dependencies:
+  - `npm install`
+- Start dev server:
+  - `npm start` (default: http://localhost:3000)
+- Run tests:
+  - `npm test`
+- Build production bundle:
+  - `npm run build`
 
-### Analyzing the Bundle Size
+To customize environment variables for local runs, create a `.env` based on `.env.example`. Remember that CRA reads env at build time.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Testing
 
-### Making a Progressive Web App
+Tests are implemented with React Testing Library and Jest:
+- Location: `src/App.test.js`
+- Coverage includes:
+  - Rendering of SPA sections and footer
+  - Theme toggle accessibility label updates
+  - Skip link and anchor navigation presence
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Run tests:
+- `npm test` (watch mode)
+- CI mode: `CI=true npm test`
 
-### Advanced Configuration
+## Theming
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+`ThemeProvider` provides a `theme` state and `toggleTheme()` for light/dark modes:
+- Theme is persisted in `localStorage`.
+- The current theme is reflected via `data-theme` attribute and used by CSS variables.
 
-### Deployment
+## Security and Secrets
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Do not hardcode secrets. All configuration must be provided via environment variables at build/deploy time. Avoid logging sensitive data. This SPA uses HTTPS when deployed behind a secure proxy; ensure appropriate headers and TLS termination are configured at the edge.
 
-### `npm run build` fails to minify
+## Folder Structure (excerpt)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- `src/index.js` — React entry point
+- `src/App.js` — SPA composition and scrolling behavior
+- `src/components/*` — UI components, feature flags, and theme provider
+- `src/hooks/*` — parallax and intersection reveal
+- `src/utils/*` — accessibility and environment utilities
+- `src/index.css`, `src/App.css` — styles for base and components
