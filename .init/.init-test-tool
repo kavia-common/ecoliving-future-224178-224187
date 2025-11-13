@@ -1,0 +1,4 @@
+{
+    "command": "npm run test",
+    "working_directory": "/home/kavia/workspace/code-generation/ecoliving-future-224178-224187/eco_cities_frontend"
+}
